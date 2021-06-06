@@ -1,0 +1,79 @@
+<%- include("_header") -%>
+
+<h1>Sample Form View</h1>
+
+<p id="message">Please enter your information below and submit the form-</p>
+
+<form class="form-horizontal">
+  <div class="form-horizontal">
+    <div class="form-group">
+      <label class="control-lable col-sm-2" for="name">Name:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="name" id="name"  required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-lable col-sm-2" for="name">Email:</label>
+      <div class="col-sm-10">
+        <input type="email" class="form-control" name="email" id="email"  required
+          placeholder="name@domain">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <div class="radio">
+          <label>Payment Type:</label><br>
+          <input type="radio" name="payment" id="cash" value="cash">
+          <label for="cash">Cash</label>
+          <br>
+          <input type="radio" name="payment" id="cc" value="cc">
+          <label for="cc">Credit Card</label>
+          <br>
+          <input type="radio" name="payment" id="gpay" value="gpay">
+          <label for="gpay">Google Pay</label>
+          <br>
+          <input type="radio" name="payment" id="appay" value="appay">
+          <label for="appay">Apple Pay</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-primary">Cancel</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<p id="result"></p>
+
+<script>
+// Typically, if the script is large, we place it in a separate file
+//   For demonstrations, it is included in the same file.
+// Handle form submission
+document.querySelector("form").addEventListener("submit", e => {
+  // Cancel default behavior of sending a synchronous POST request
+  e.preventDefault();
+  // Create a FormData object, passing the form as a parameter
+  const formData = new FormData(e.target);
+  // Send form data to the server with an asynchronous POST request
+  fetch("/useAjax", {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("message").textContent = "Thank you for submitting the form!";
+      document.getElementById("result").innerHTML = `${data.name}, we received your order. <br>
+        Order status will be sent to ${data.email}.  <br>
+        Thanks for using ${data.payment} payment type.`;
+      //document.getElementById("data.payment").checked = true;
+    })
+    .catch(err => {
+        document.getElementById("message").textContent = `Error: ${err.message}`;
+    });
+});
+</script>
+
+<%- include("_footer") -%>
